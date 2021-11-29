@@ -1,0 +1,7 @@
+name: bacpaperpatch
+version: '${project.version}'
+main: me.secondairy.bacpaperpatch.Main
+api-version: 1.17
+prefix: BAC-PaperPatch
+authors: [ Secondairy ]
+description: Fixes bugged advancements due to paper bug #4252
