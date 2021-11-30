@@ -1,9 +1,7 @@
 package me.secondairy.bacpaperpatch;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Drowned;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,8 +16,10 @@ public class EntityDamagebyEntity implements Listener {
     public void onDamage(EntityDamageByEntityEvent e) {
         Damageable victim = (Damageable) e.getEntity();
         if (e.getDamager() instanceof Player) {
-            if (victim instanceof Drowned) {
-                if ((victim.getHealth() - e.getDamage()) <= 0) {
+            Player player = (Player) e.getDamager();
+            if ((victim.getHealth() - e.getDamage()) <= 0) {
+                //Captain etho logic
+                if (victim instanceof Drowned) {
                     ItemStack mainHand = Objects.requireNonNull(((Drowned) victim).getEquipment()).getItemInMainHand();
                     ItemStack offHand = Objects.requireNonNull(((Drowned) victim).getEquipment()).getItemInOffHand();
                     ItemStack trident = new ItemStack(Material.TRIDENT);
@@ -27,7 +27,31 @@ public class EntityDamagebyEntity implements Listener {
                     if ((mainHand.isSimilar(trident) && offHand.isSimilar(shell))
                             || mainHand.isSimilar(shell) && offHand.isSimilar(trident)) {
                         e.setCancelled(true);
-                        grantAdvancement("blazeandcave","monsters/captain_etho", (Player) e.getDamager());
+                        grantAdvancement("blazeandcave", "monsters/captain_etho", player);
+                        victim.damage(e.getDamage());
+                    }
+                }
+
+                //trick or treat logic
+                if (victim instanceof Zombie
+                        || victim instanceof Piglin
+                        || victim instanceof PiglinBrute
+                        || victim instanceof Player
+                        || victim instanceof Skeleton
+                        || victim instanceof WitherSkeleton
+                        || victim instanceof Stray) {
+                    ItemStack helmet = Objects.requireNonNull(((LivingEntity) victim).getEquipment()).getHelmet();
+                    ItemStack pumpkin = new ItemStack((Material.CARVED_PUMPKIN));
+                    ItemStack jack_o_lantern = new ItemStack((Material.JACK_O_LANTERN));
+                    assert helmet != null;
+                    if ((helmet.isSimilar(pumpkin))) {
+                        e.setCancelled(true);
+                        grantAdvancement("blazeandcave", "monsters/trick_or_treat", player);
+                        victim.damage(e.getDamage());
+                    }
+                    if ((helmet.isSimilar(jack_o_lantern))) {
+                        e.setCancelled(true);
+                        grantAdvancement("blazeandcave", "monsters/handsome_jack", player);
                         victim.damage(e.getDamage());
                     }
                 }
@@ -35,3 +59,4 @@ public class EntityDamagebyEntity implements Listener {
         }
     }
 }
+
