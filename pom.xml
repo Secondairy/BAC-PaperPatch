@@ -6,7 +6,7 @@
 
     <groupId>me.secondairy</groupId>
     <artifactId>BAC-PaperPatch</artifactId>
-    <version>1.0-Release</version>
+    <version>1.1-Release</version>
     <packaging>jar</packaging>
 
     <name>BAC-PaperPatch</name>
