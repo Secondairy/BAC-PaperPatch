@@ -14,8 +14,8 @@ import static me.secondairy.bacpaperpatch.Main.grantAdvancement;
 public class EntityDamagebyEntity implements Listener {
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e) {
-        Damageable victim = (Damageable) e.getEntity();
-        if (e.getDamager() instanceof Player) {
+        if (e.getDamager() instanceof Player && e.getEntity() instanceof Damageable) {
+            Damageable victim = (Damageable) e.getEntity();
             Player player = (Player) e.getDamager();
             if ((victim.getHealth() - e.getDamage()) <= 0) {
                 //Captain etho logic
