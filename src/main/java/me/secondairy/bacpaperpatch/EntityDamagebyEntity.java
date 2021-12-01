@@ -42,16 +42,10 @@ public class EntityDamagebyEntity implements Listener {
                         || victim instanceof Stray) {
                     ItemStack helmet = Objects.requireNonNull(((LivingEntity) victim).getEquipment()).getHelmet();
                     ItemStack pumpkin = new ItemStack((Material.CARVED_PUMPKIN));
-                    ItemStack jack_o_lantern = new ItemStack((Material.JACK_O_LANTERN));
                     assert helmet != null;
                     if ((helmet.isSimilar(pumpkin))) {
                         e.setCancelled(true);
                         grantAdvancement("blazeandcave", "monsters/trick_or_treat", player);
-                        victim.damage(e.getDamage());
-                    }
-                    if ((helmet.isSimilar(jack_o_lantern))) {
-                        e.setCancelled(true);
-                        grantAdvancement("blazeandcave", "monsters/handsome_jack", player);
                         victim.damage(e.getDamage());
                     }
                 }
