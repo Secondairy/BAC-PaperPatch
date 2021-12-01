@@ -2,6 +2,7 @@ package me.secondairy.bacpaperpatch;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.PiglinAbstract;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,12 +17,13 @@ import static me.secondairy.bacpaperpatch.Main.checkRequired;
 public class EntityDeath implements Listener {
 
     @EventHandler
-    public void onEntityDeath(EntityDeathEvent event) {
-        Player player = event.getEntity().getKiller();
+    public void onEntityDeath(EntityDeathEvent e) {
+        if (e.getEntity().getKiller() != null) {
+            Player player = e.getEntity().getKiller();
+            List<ItemStack> drops = e.getDrops();
 
-        if (player != null) {
             //Logic for RPS and Custom Boss Fight
-            if (event.getEntityType() == EntityType.ZOMBIE) {
+            if (e.getEntityType() == EntityType.ZOMBIE) {
                 ItemStack currHand = Objects.requireNonNull(player.getEquipment()).getItemInMainHand();
                 List<ItemStack> fullDiamond = new ArrayList<ItemStack>() {{
                     add(new ItemStack(Material.DIAMOND_HELMET));
@@ -32,23 +34,29 @@ public class EntityDeath implements Listener {
                 }};
 
                 //Checks the dropped items against the fullDiamond array list
-                if (checkRequired(event.getDrops(), fullDiamond, null)) {
+                if (checkRequired(drops, fullDiamond, null)) {
                     grantAdvancement("blazeandcave","monsters/custom_boss_fight", player);
                 }
 
                 //Checking for shears, paper or cobblestone in the drop
                 //Then checking for the reciprocal item in the player's hand
-                if ((checkRequired(event.getDrops(), null, new ItemStack(Material.SHEARS)) && Objects.equals(currHand.getType(), Material.COBBLESTONE))
-                        || (checkRequired(event.getDrops(), null, new ItemStack(Material.COBBLESTONE)) && Objects.equals(currHand.getType(), Material.PAPER))
-                        || (checkRequired(event.getDrops(), null, new ItemStack(Material.PAPER)) && Objects.equals(currHand.getType(), Material.SHEARS))
+                if ((checkRequired(drops, null, new ItemStack(Material.SHEARS)) && Objects.equals(currHand.getType(), Material.COBBLESTONE))
+                        || (checkRequired(drops, null, new ItemStack(Material.COBBLESTONE)) && Objects.equals(currHand.getType(), Material.PAPER))
+                        || (checkRequired(drops, null, new ItemStack(Material.PAPER)) && Objects.equals(currHand.getType(), Material.SHEARS))
                 ) {
                     grantAdvancement("blazeandcave","weaponry/rock_paper_shears", player);
                 }
             }
             //Logic for Mollusc Man
-            if (event.getEntityType() == EntityType.DROWNED) {
-                if (checkRequired(event.getDrops(), null, new ItemStack(Material.NAUTILUS_SHELL))) {
+            if (e.getEntityType() == EntityType.DROWNED) {
+                if (checkRequired(drops, null, new ItemStack(Material.NAUTILUS_SHELL))) {
                     grantAdvancement("blazeandcave","monsters/mollusc_man", player);
+                }
+            }
+            //Logic for When Piglins Fly
+            if (e.getEntity() instanceof PiglinAbstract) {
+                if (checkRequired(drops, null, new ItemStack(Material.ELYTRA))) {
+                    grantAdvancement("blazeandcave","nether/when_piglins_fly", player);
                 }
             }
         }
